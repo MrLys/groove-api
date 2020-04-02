@@ -15,13 +15,14 @@
 
 
 (def db-spec
-  {:dbtype (env :dbtype)
+  {:classname "org.postgresql.Driver"
+   :dbtype (env :dbtype)
    :dbname (env :dbname)
-   :subname (env :dbhost)
-   :jdbc-url (str "jdbc:postgresql://" (env :dburl))
+   :host (env :dbhost)
    :user (env :dbuser)
-   :subame (env :subname)
-   :password (env :password)})
+   :password (env :password)
+   :ssl true
+   :sslfactory "org.postgresql.ssl.NonValidatingFactory"})
 
 (def swagger-config
   {:ui "/api/v1/docs"
@@ -30,8 +31,8 @@
                  :securityDefinitions {:api_key {:type "apiKey" :name "Authorization" :in "header"}}}}})
 
 (defn setup-db []
-  (log/info (str "Setting up db " (:dbname db-spec)))
-  (db/set-default-db-connection! db-spec)
+  (log/info (str "Setting up db " (:dbname db-spec) " , " (:dbhost db-spec)))
+  (db/set-default-db-connection! db-spec)   
   (models/set-root-namespace! 'groove.models))
 
 (def app
