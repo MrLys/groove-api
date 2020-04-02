@@ -86,6 +86,7 @@
    (db/get-all-grooves-by-date-range (get-user-id req) start end))
   ([req ]
    (db/get-all-grooves-by-date-range (get-user-id req))))
+
 (defn update-user-password! [user]
   (let [digest (hashers/derive (:password user))]
     (db/update-user! (:user_id user) :digest digest)))

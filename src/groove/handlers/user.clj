@@ -69,7 +69,7 @@
         (error (str "An attempt was made at updating a password with an invalid token. " db-token) {:error "Invalid token"})))))
 
 (defn update-user-handler [request]
-  (response-handler :POST update-user-password request))
+  (response-handler :POST (if update-user-password {:success "success"} {:error "error"}) request))
 
 (defn forgot-password-handler [email]
   (log/info (str "A user has forgotten his/her password. Email: " email))
