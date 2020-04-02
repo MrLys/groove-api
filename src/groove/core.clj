@@ -17,6 +17,7 @@
 (def db-spec
   {:dbtype (env :dbtype)
    :dbname (env :dbname)
+   :subname (env :database_url)
    :user (env :dbuser)
    :subame (env :subname)
    :password (env :password)})
