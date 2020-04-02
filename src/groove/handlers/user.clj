@@ -19,7 +19,7 @@
         db-user (blwrk/new-user user)]
     (blwrk/new-activation-token! activation-token (:id db-user) date)
     (if (:slackurl env)
-      (future (send-to-slack (:slackurl env) (str (when (= (:istest env) "false") "(THIS IS ONLY A TEST!)\n ") "A new user has created an account! 🎉 \n Total number of unique users is " (blwrk/get-user-count))))
+      (future (send-to-slack (:slackurl env) (str (when-not (= (:istest env) "false") "(THIS IS ONLY A TEST!)\n ") "A new user has created an account! 🎉 \n Total number of unique users is " (blwrk/get-user-count))))
       (log/debug "Slackurl not set"))
     (when-not (= (:isdev env) "true")
       (do
