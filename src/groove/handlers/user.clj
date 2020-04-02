@@ -33,7 +33,7 @@
               :ssl true
               :port (:mailport env)
               :subject "Welcome to Rutta!"
-              :text (str "<h1>Welcome to Rutta!</h1>" "Please follow this link for activation<br/>" "<a href=\"http://localhost:8080/activation?token=" activation-token"\">Click here</a>")))))
+              :text (str "<h1>Welcome to Rutta!</h1>" "Please follow this link for activation<br/>" "<a href=\"" (:ruttaurl env) "/activation?token=" activation-token"\">Click here</a>")))))
     db-user))
 
 (defn create-user [user]
@@ -85,7 +85,7 @@
                             :mailhost (:mailhost env)
                             :ssl true
                             :port (:mailport env)
-                            :subject "Password reset" :text (str "<h1>A request to reset the password for the account has been made.</h1>\n" "<p>The link below is valid for 24 hours.</p>\n""Please follow this link to create a new password \n" "<a href=\"http://localhost:8080/Password?token=" token"\">Click here</a>")))))
+                            :subject "Password reset" :text (str "<h1>A request to reset the password for the account has been made.</h1>\n" "<p>The link below is valid for 24 hours.</p>\n""Please follow this link to create a new password \n" "<a href=\"" (:ruttaurl env) "/Password?token=" token"\">Click here</a>")))))
           token)))
       (error (str "(Fail) Invalid email " email) {:error "Invalid email"})))
 
