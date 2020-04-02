@@ -17,8 +17,8 @@
 (def db-spec
   {:dbtype (env :dbtype)
    :dbname (env :dbname)
-   :subname (env :DATABASE_URL)
-   :jdbc-url (str "jdbc:" (env :DATABASE_URL))
+   :subname (env :dbhost)
+   :jdbc-url (str "jdbc:postgresql://" (env :dburl))
    :user (env :dbuser)
    :subame (env :subname)
    :password (env :password)})
