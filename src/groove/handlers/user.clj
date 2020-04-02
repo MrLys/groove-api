@@ -50,9 +50,13 @@
 (defn create-user-handler [user]
   (response-handler :POST create-user user))
 
+(defn- activate-user-hander-reponse [token]
+    (if (blwrk/activate-user token)
+      {:success "success"}
+      {:error "error"}))
 
 (defn activate-user-handler [token]
-  (response-handler :POST blwrk/activate-user token))
+  (response-handler :POST activate-user-hander-reponse token))
 
 (defn update-user-password [request]
   (let [db-token (db/get-password-token (:token request))]
