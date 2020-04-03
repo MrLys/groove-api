@@ -67,9 +67,13 @@
           (blwrk/invalidate-password-token! (:token_id db-token)(:user_id db-token))
           (blwrk/update-user-password! {:user_id (:user_id db-token) :password (:password request)}))
         (error (str "An attempt was made at updating a password with an invalid token. " db-token) {:error "Invalid token"})))))
+(defn- update-user-handler-response [request]
+  (if (update-user-password request)
+      {:success "success"}
+      {:error "error"}))
 
 (defn update-user-handler [request]
-  (response-handler :POST (if update-user-password {:success "success"} {:error "error"}) request))
+  (response-handler :POST update-user-handler-response request))
 
 (defn forgot-password-handler [email]
   (log/info (str "A user has forgotten his/her password. Email: " email))

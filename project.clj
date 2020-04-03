@@ -22,6 +22,7 @@
                  [buddy/buddy-hashers "1.4.0"]
                  [buddy/buddy-auth "2.2.0"]
                  [http-kit "2.3.0"]
+                 [ring-cors "0.1.13"]
                  ;logging 
                  [org.clojure/tools.logging "0.6.0"]
                  ;environment
