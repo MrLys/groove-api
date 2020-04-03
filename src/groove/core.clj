@@ -9,6 +9,7 @@
             [toucan.models :as models]
             [groove.util.utils :refer [parseLong]]
             [ring.middleware.reload :refer [wrap-reload]]
+            [ring.middleware.cors :refer [wrap-cors]]
             [environ.core :refer [env]]
             [org.httpkit.server :refer :all]
             [ring.adapter.jetty :refer [run-jetty]]))
@@ -36,9 +37,15 @@
   (models/set-root-namespace! 'groove.models))
 
 (def app
-  (api
+  (-> 
+    (api
     {:swagger swagger-config}
-    (context "/api" [] groove-routes user-routes habit-routes)))
+    (context "/api" [] groove-routes user-routes habit-routes))
+      (wrap-cors
+        :access-control-allow-origin (re-pattern (:origin env))
+        :access-control-allow-methods [:get :post :patch]
+        :access-control-allow-headers ["Origin" "X-Requested-With" "Content-Type" "Accept"]
+        )))
 
 (defn -main
   [& args]
