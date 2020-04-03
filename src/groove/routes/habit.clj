@@ -10,14 +10,14 @@
    :name (s/constrained s/Str valid-name?)})
 
 (def habit-routes
-  [(POST "/habit" [:as request]
+  [(POST "/api/habit" [:as request]
          :tags ["Habits"]
          :header-params [authorization :- String]
          :middleware [wrap-token-auth]
          :body [create-habit-req HabitRequestSchema]
          (create-habit-handler create-habit-req request))
 
-   (GET "/habits" [:as request]
+   (GET "/api/habits" [:as request]
         :header-params [authorization :- String]
         :tags ["habits"]
         :middleware [wrap-token-auth]

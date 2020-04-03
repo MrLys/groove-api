@@ -40,7 +40,7 @@
   (-> 
     (api
     {:swagger swagger-config}
-    (context "/api" [] groove-routes user-routes habit-routes))
+    groove-routes user-routes habit-routes)
       (wrap-cors
         :access-control-allow-origin (re-pattern (:origin env))
         :access-control-allow-methods [:get :post :patch]

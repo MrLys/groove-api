@@ -16,29 +16,29 @@
     :token (s/constrained s/Str valid-password-token?)})
 
 (def user-routes
-  [(-> (GET "/all-data" [:as request]
+  [(-> (GET "/api/all-data" [:as request]
              :tags ["User"]
              :header-params [authorization :- String]
              :middleware [wrap-token-auth]
              (get-all-data-handler request)))
-   (-> (POST "/login" [:as request]
+   (-> (POST "/api/login" [:as request]
              :tags ["User"]
              :header-params [authorization :- String]
              :middleware [wrap-basic-auth]
              (auth-credentials-reponse request)))
-   (POST "/register" []
+   (POST "/api/register" []
          :tags ["User"]
          :body [user UserRequestSchema]
          (create-user user))
-   (POST "/activate" []
+   (POST "/api/activate" []
          :tags ["User"]
          :query-params [activation-token :- String]
          (activate-user-handler activation-token))
-   (POST "/forgot" []
+   (POST "/api/forgot" []
          :tags ["User"]
          :query-params [email :- String]
          (forgot-password email))
-   (POST "/update" []
+   (POST "/api/update" []
          :tags ["User"]
          :body [request ForgotPasswordRequestSchema]
          (update-user-handler request))])
