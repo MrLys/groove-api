@@ -43,7 +43,9 @@
     groove-routes user-routes habit-routes)
       (wrap-cors
         :access-control-allow-origin (re-pattern (:origin env))
-        :access-control-allow-methods [:get :post :patch]
+        :access-control-allow-methods [:get :post :patch :options]
+        :access-control-allow-credentials true
+        :access-control-max-age 240
         :access-control-allow-headers ["Origin" "X-Requested-With" "Content-Type" "Accept"]
         )))
 
