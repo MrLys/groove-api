@@ -46,7 +46,7 @@
         :access-control-allow-methods [:get :post :patch]
         :access-control-allow-credentials "true"
         :access-control-max-age "240"
-        :access-control-allow-headers ["Origin" "Authorization"]
+        :access-control-allow-headers ["Origin" "Authorization" "Content-Type"]
         )))
 
 (defn -main
