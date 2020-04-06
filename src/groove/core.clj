@@ -25,6 +25,13 @@
    :ssl true
    :sslfactory "org.postgresql.ssl.NonValidatingFactory"})
 
+(def db-spec-test
+  {:classname "org.postgresql.Driver"
+   :dbtype (env :dbtype)
+   :dbname (env :dbnametest)
+   :user (env :dbusertest)
+   :password (env :passwordtest)})
+
 (def swagger-config
   {:ui "/api/v1/docs"
    :spec "/swagger.json"
@@ -33,11 +40,11 @@
 
 (defn setup-db []
   (log/info (str "Setting up db " (:dbname db-spec) " , " (:dbhost db-spec)))
-  (db/set-default-db-connection! db-spec)   
+  (db/set-default-db-connection! db-spec)
   (models/set-root-namespace! 'groove.models))
 
 (def app
-  (-> 
+  (->
     (api
     {:swagger swagger-config}
     groove-routes user-routes habit-routes)
@@ -56,6 +63,6 @@
 
 (defn -dev-main
   [& args]
-  (db/set-default-db-connection! db-spec)
+  (db/set-default-db-connection! db-spec-test)
   (models/set-root-namespace! 'groove.models)
   (run-jetty (wrap-reload #'app) {:port (parseLong (env :port))}))

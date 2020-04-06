@@ -25,10 +25,14 @@
       (throw (.IllegalArgumentException (str s " is not a valid Long"))))))
 
 
+
 (defn sanitize [m & args]
   "Updates each value in a map with the url-encoded variation"
   (log/info (str "sanitizing!\n" m))
-  (reduce (fn [r [k v]] (assoc r k (apply codec/url-encode v args))) {} m))
+  (reduce (fn [r [k v]]
+            (if (map? v)
+              (sanitize v)
+              (assoc r k (apply codec/url-encode v args)))) {} m))
 
 (def truthy? #{"true"})
 
@@ -50,6 +54,6 @@
   (log/info (str "payload: " text))
   (client/post url {:form-params {:payload (json/write-str {:text text})}}))
 
-(defn error 
+(defn error
   ([error] (log/debug (:error error)) error)
   ([message error] (log/debug (:error error)) error))
