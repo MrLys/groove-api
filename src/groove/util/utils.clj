@@ -31,7 +31,7 @@
   (log/info (str "sanitizing!\n" m))
   (reduce (fn [r [k v]]
             (if (map? v)
-              (sanitize v)
+              (assoc r k (sanitize v))
               (assoc r k (apply codec/url-encode v args)))) {} m))
 
 (def truthy? #{"true"})
