@@ -28,11 +28,14 @@
 
 (defn sanitize [m & args]
   "Updates each value in a map with the url-encoded variation"
-  (log/info (str "sanitizing!\n" m))
-  (reduce (fn [r [k v]]
+  (if (not (map? m))
+    m
+    (do
+      (log/info (str "sanitizing!\n" m))
+      (reduce (fn [r [k v]]
             (if (map? v)
               (assoc r k (sanitize v))
-              (assoc r k (apply codec/url-encode v args)))) {} m))
+              (assoc r k (apply codec/url-encode v args)))) {} m))))
 
 (def truthy? #{"true"})
 
