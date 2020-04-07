@@ -9,7 +9,7 @@
     (nil? (:error value))))
 
 (def ^:private handler-map {:GET (fn [v] (if (valid-response? v) (ok v) (not-found "Not found")))
-                  :POST (fn [v] (if (valid-response? v) (created v) (unauthorized "Not authorized!")))
+                  :POST (fn [v] (if (valid-response? v) (ok v) (unauthorized "Not authorized!")))
                   :PATCH (fn [v] (if (valid-response? v) (ok v) (unauthorized "Not authorized!")))
                   :PUT (fn [v] (if (valid-response? v) (ok v) (unauthorized "Not authorized!")))})
 ; Get the function or deciding the response
