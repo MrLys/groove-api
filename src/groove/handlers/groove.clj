@@ -14,7 +14,9 @@
 (defn- consecutive? [current prev]
   (log/info (str "consecutive? " (.isEqual (.toLocalDate (:date current)) (.plusDays (.toLocalDate (:date prev)) -1))))
   (.isEqual (.toLocalDate (:date current)) (.plusDays (.toLocalDate (:date prev)) -1)))
-
+(defn- isTodayOrYesterday? [groove]
+  (or (.isEqual (.toLocalDate (:date groove)) (java.time.LocalDate/now))
+      (.isEqual (.toLocalDate (:date groove)) (.plusDays (java.time.LocalDate/now) -1))))
 
 (defn- calc-streak [grooves c n]
   (log/info (format "calc-streak c: %d n: %d" c n))
@@ -22,7 +24,7 @@
    c
   (let [current (nth grooves n)
         previous (nth grooves (dec n))]
-    (log/info (format "Gotten to streak c-state:%s ",c n (:state current)))
+    (log/info (format "Gotten to streak c-state:%s date: %s", (:state current), (:date current)))
     (cond (failed? (nth grooves n)) c
           (not (consecutive? current previous)) c
           (pass? current) (calc-streak grooves c (inc n))
@@ -32,9 +34,11 @@
 (defn calculate-streak [request user-habit-id]
   (let [grooves (blwrk/get-grooves-descending request user-habit-id)]
     (log/info (format "calculating streak with count: %d" (count grooves)))
-    (cond (failed? (first grooves))  0
-          (pass?  (first grooves)) (calc-streak grooves 0 1)
-          (success? (first grooves)) (calc-streak grooves 1 1))))
+    (cond 
+      (not (isTodayOrYesterday? (first grooves))) 0
+      (failed? (first grooves))  0
+      (pass?  (first grooves)) (calc-streak grooves 0 1)
+      (success? (first grooves)) (calc-streak grooves 1 1))))
           
 (defn update-streak [groove request]
   (blwrk/update-current-habit-streak! request (:user_habit_id groove) (calculate-streak request (:user_habit_id groove))))
