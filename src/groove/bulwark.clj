@@ -23,6 +23,11 @@
 (defn- validate-user-permission [req id]
     (validate-permission (:id (:identity req)) id))
 
+(defn get-last-by-habit [request habit-id]
+  (db/get-last-by-habit (get-user-id request) habit-id))
+
+(defn update-current-habit-streak! [request user-habit streak]
+  (db/update-current-habit-streak! (get-user-id request) user-habit streak))
 
 (defn get-by-dates [request user-habit-id start-date end-date]
     (db/get-grooves-by-date-range (get-user-id request) user-habit-id start-date end-date))
@@ -48,12 +53,13 @@
      {:error "Not authorized"})))
 
 (defn create-habit [habit req] ;; One only gets this far if the user is authenticated
+  (log/info (str "creating habit" habit))
   (if (validate-user-permission req (:owner_id habit))
     (let [db-habit (db/get-habit-by-name (:name habit))]
       (if (empty? db-habit)
         (sanitize (db/create-user-habit (db/create-habit (:name habit)) (:owner_id habit)))
         (if (nil? (db/get-user-habit (:owner_id habit) (:id db-habit)))
-          (sanitize (db/create-user-habit db-habit (:owner_id habit)))
+          (db/create-user-habit db-habit (:owner_id habit))
           {:error "You are already tracking that habit"})))
     {:error "Not authorized"}))
 
@@ -61,7 +67,7 @@
   (db/get-all-habits-by-user-id (get-user-id request)))
 
 (defn get-habit [habit-id request]
-  (db/get-user-habit (get-user-id request) habit-id))
+  (db/get-user-habit-with-name (get-user-id request) habit-id))
 
 (defn- activation-helper [id]
   (db/activate-user id))
@@ -84,7 +90,7 @@
 (defn get-all-grooves-by-date-range
   ([req start end]
    (db/get-all-grooves-by-date-range (get-user-id req) start end))
-  ([req ]
+  ([req]
    (db/get-all-grooves-by-date-range (get-user-id req))))
 
 (defn update-user-password! [user]
@@ -114,3 +120,6 @@
 
 (defn create-team [request name]
   (db/create-team (get-user-id request) name))
+
+(defn get-grooves-descending [request user-habit-id]
+  (db/get-grooves-descending (get-user-id request) user-habit-id))

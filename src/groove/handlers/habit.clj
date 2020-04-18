@@ -29,6 +29,7 @@
              {:name (:name x)
               :id (:id x)
               :owner_id (:id (:identity req))
+              :current_streak (:current_streak x)
               :grooves (get-grooves grooves (:id x))})) {} habits))
 
 (defn get-all-habits-with-grooves
@@ -41,7 +42,18 @@
          grooves (blwrk/get-all-grooves-by-date-range req)]
      (build-habit-map habits grooves req))))
 
+(defn get-habit-with-all-grooves [req user-habit-id start end]
+  (let [habit (first (blwrk/get-habit user-habit-id req))
+        grooves (blwrk/get-grooves-by-dates-and-habits req user-habit-id start end)]
+    {:name (:name habit)
+     :id (:id habit)
+     :owner_id (:id (:identity req))
+     :current_streak (:current_streak habit)
+     :grooves grooves}))
 
-(defn get-all-grooves-by-habit [req start end]
+(defn get-all-grooves-by-habits [req start end]
   (response-handler :GET get-all-habits-with-grooves req start end))
+
+(defn get-all-grooves-by-habit [req user-habit-id start end]
+  (response-handler :GET get-habit-with-all-grooves req user-habit-id start end))
 

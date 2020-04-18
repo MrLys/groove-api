@@ -13,6 +13,11 @@
             [buddy.hashers :as hashers]
             [schema-tools.core :as st]))
 
+(defn get-last-by-habit [user-id user-habit-id]
+  (db/select-one Groove :owner_id user-id :user_habit_id user-habit-id {:order-by [[:date :desc]]}))
+
+(defn get-grooves-descending [user-id user-habit-id]
+  (db/select Groove :owner_id user-id :user_habit_id user-habit-id {:order-by [[:date :desc]]}))
 
 (defn new-user! [user]
   (let [digest (hashers/derive (:password user))]
@@ -85,7 +90,7 @@
   (db/select-one Habit :name name))
 
 (defn get-all-habits-by-user-id [user-id]
-  (db/query {:select [:user_habit.id :habit.name]
+  (db/query {:select [:user_habit.id :habit.name :user_habit.current_streak]
              :from [:habit]
              :where [:= :user_habit.owner_id user-id]
              :join [:user_habit [:= :habit.id :user_habit.habit_id]]}))
@@ -138,7 +143,17 @@
               :where [:= :user_team.owner_id user-id]
               :left-join [:user_team [:= :team.id :user_team.team_id]]}))
 
+(defn get-user-habit-with-name [user-id user-habit-id]
+  (db/query {:select [:user_habit.id :user_habit.current_streak :user_habit.owner_id :habit.name] 
+             :from [:user_habit] 
+             :where [:and [:= :user_habit.id user-habit-id] 
+                     [:= :user_habit.owner_id user-id]]
+             :left-join [:habit [:= :habit.id :user_habit.habit_id]]}))
 (defn create-team [user-id name]
   (db/insert! User_team :owner_id user-id :team_id (:id (db/insert! Team :name name))))
+
 (defn get-user-count []
   (db/count User))
+
+(defn update-current-habit-streak! [user-id user-habit-id streak]
+  (db/update-where! User_habit {:id user-habit-id :owner_id user-id} :current_streak streak))

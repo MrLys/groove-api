@@ -19,7 +19,14 @@
 
    (GET "/api/habits" [:as request]
         :header-params [authorization :- String]
-        :tags ["habits"]
+        :tags ["Habits"]
         :middleware [wrap-token-auth]
         :query-params [start_date :- java.time.LocalDate, end_date :- java.time.LocalDate]
-        (get-all-grooves-by-habit request start_date end_date))])
+        (get-all-grooves-by-habits request start_date end_date))
+   (GET "/api/habit/:user_habit_id" [:as request]
+        :header-params [authorization :- String]
+        :tags ["Habits"]
+        :middleware [wrap-token-auth]
+        :query-params [start_date :- java.time.LocalDate, end_date :- java.time.LocalDate]
+        :path-params [user_habit_id :- Long]
+        (get-all-grooves-by-habit request user_habit_id start_date end_date))])

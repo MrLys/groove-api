@@ -37,7 +37,7 @@
         resp6 (groove/update-groove g6 req)
         resp7 (groove/update-groove g7 req2)
         _ (groove/update-groove g7 req) ; should not be included
-        resp8 (handler/get-all-grooves-by-habit req (.plusDays today -22) today)]
+        resp8 (handler/get-all-grooves-by-habits req (.plusDays today -22) today)]
     (and
       (is (nil? (:error resp1)))
       (is (not (nil? (:error resp2))))
